@@ -1,9 +1,34 @@
 import * as vscode from 'vscode';
 
-interface Options {
-    label: String;
-    detail: String;
-    type: String;
+function parseTimeString(timeString: string): Thenable<string | undefined> | number {
+    const timeUnits: Record<string, number> = {
+        day: 24 * 60 * 60 * 1000,
+        hr: 60 * 60 * 1000,
+        min: 60 * 1000,
+        sec: 1000,
+    };
+
+    const timeValues: Record<string, number> = { day: 0, hr: 0, min: 0, sec: 0 };
+
+    // Extract the time unit and value from the input string
+    const regex = /(\d+)\s*(day|hr|min|sec)/gi;
+    let match;
+
+    while ((match = regex.exec(timeString)) !== null) {
+        const value = parseInt(match[1]);
+        const unit = match[2];
+
+        timeValues[unit] = value;
+    }
+
+    // Calculate the total time in milliseconds
+    let totalMilliseconds = 0;
+
+    for (const unit in timeUnits) {
+        totalMilliseconds += timeUnits[unit] * timeValues[unit];
+    }
+
+    return totalMilliseconds;
 }
 
 export function activate(context: vscode.ExtensionContext) {
@@ -48,43 +73,26 @@ export function activate(context: vscode.ExtensionContext) {
                 if (val === undefined) {
                     vscode.window.showErrorMessage('Invalid Input, Please enter correct format! ');
                 } else {
-                    // 1 second = 1000 miliseconds
-                    // 1 minute = (60000) miliseconds - 60 * 1000
-                    // 1 hour = 3600000 miliseconds - 60 * 60 *1000 = 3600000
-                    // 1 day to miliseconds
-                    // 1 week to miliseconds
-                    // 1 month to miliseconds
-                    // 1 year to miliseconds
-
                     if (!val) {
                         return;
                     } else {
-                        const opt = ['sec', 'min', 'hr', 'day']; // 'mon', 'week', 'year'
+                        let passvalue = val.replace(/[\s,.]+/g, '');
+                        const timeInMiliSeconds = parseTimeString(passvalue);
 
-                        let nums = {
-                            sec: 0,
-                            min: 0,
-                            hr: 0,
-                            day: 0,
-                        };
-
-                        const input = val.replace(/\s/g, '');
-
-                        const items = val.split(' ');
-                        console.log(items);
-
-                        const timeInMiliSeconds = parseInt(val) * 1000;
+                        if (timeInMiliSeconds === 0 || timeInMiliSeconds === undefined) {
+                            return vscode.window.showErrorMessage('Invalid Input');
+                        }
 
                         const editor = vscode.window.activeTextEditor;
                         if (timeInMiliSeconds.toString() !== 'NaN') {
                             if (editor) {
                                 editor.edit((editBuilder) => {
                                     const position = editor.selection.active;
-                                    editBuilder.insert(position, timeInMiliSeconds.toString());
+                                    editBuilder.insert(position, ' ' + timeInMiliSeconds.toString());
                                 });
                             }
                         } else {
-                            return vscode.window.showErrorMessage('Invalid Input, pass 1 day, 10 hr, 30 min etc...');
+                            return vscode.window.showErrorMessage('Invalid Input, pass 1 day 10 hr 30 min etc...');
                         }
                     }
                 }
@@ -107,10 +115,10 @@ const convertTimeToSecond = async (options: any[]) => {
     });
 };
 
-export const dayToMS = (val: number) => 86400000 * val;
-export const hrToMS = (val: number) => 60 * 60 * 1000 * val;
-export const minToMS = (val: number) => 60 * 1000 * val;
-export const secToMS = (val: number) => 1000 * val;
+// export const dayToMS = (val: number) => 86400000 * val;
+// export const hrToMS = (val: number) => 60 * 60 * 1000 * val;
+// export const minToMS = (val: number) => 60 * 1000 * val;
+// export const secToMS = (val: number) => 1000 * val;
 
 async function getUserSelectedValue(choices: any[]) {
     return new Promise((resolve) => {

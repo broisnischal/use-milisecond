@@ -1,0 +1,42 @@
+const timeString = '1day 3hr 23min';
+
+const lowerTimeString = timeString.replace(/\s/g, '').toLowerCase();
+
+let timeUnits = {
+  day: 24 * 60 * 60 * 1000,
+  hr: 60 * 60 * 1000,
+  min: 60 * 1000,
+  sec: 1000,
+};
+
+let timeValues = {};
+
+let matches = timeString.match(/(\d+)([a-z]+)/gi);
+
+if (matches !== null) {
+  matches.forEach((match) => {
+    let value = parseInt(match.match(/\d+/)[0]);
+    let unit = match.match(/[a-z]+/i)[0].toLowerCase();
+
+    if (!(unit in timeUnits)) {
+      throw new Error(`Invalid Unit ${unit} !`);
+    }
+    timeValues[unit] = value;
+  });
+}
+
+Object.keys(timeUnits).forEach((unit) => {
+  if (!(unit in timeValues)) {
+    timeValues[unit] = 0;
+  }
+});
+
+let totalMiliseconds = 0;
+
+Object.keys(timeValues).forEach((unit) => {
+  totalMiliseconds += timeValues[unit] * timeUnits[unit];
+});
+
+console.log(timeValues);
+
+console.log(totalMiliseconds);
