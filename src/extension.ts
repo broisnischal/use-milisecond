@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
 
-type Options = {
+interface Options {
     label: String;
     detail: String;
     type: String;
-};
+}
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('Use second is now active!');
@@ -36,6 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
     //     const choosed = await convertTimeToSecond(options);
     //     console.log(choosed);
     // });
+
     let disposable = vscode.commands.registerCommand('time.useMilisecond', () => {
         vscode.window
             .showInputBox({
@@ -55,23 +56,35 @@ export function activate(context: vscode.ExtensionContext) {
                     // 1 month to miliseconds
                     // 1 year to miliseconds
 
-                    console.log(val);
-
                     if (!val) {
-                        vscode.window.showErrorMessage('Invalid value!');
-                    }
+                        return;
+                    } else {
+                        const opt = ['sec', 'min', 'hr', 'day']; // 'mon', 'week', 'year'
 
-                    const timeInMiliSeconds = parseInt(val) * 1000;
-                    console.log(timeInMiliSeconds);
+                        let nums = {
+                            sec: 0,
+                            min: 0,
+                            hr: 0,
+                            day: 0,
+                        };
 
-                    if (typeof timeInMiliSeconds !== typeof NaN) {
+                        const input = val.replace(/\s/g, '');
+
+                        const items = val.split(' ');
+                        console.log(items);
+
+                        const timeInMiliSeconds = parseInt(val) * 1000;
+
                         const editor = vscode.window.activeTextEditor;
-
-                        if (editor) {
-                            editor.edit((editBuilder) => {
-                                const position = editor.selection.active;
-                                editBuilder.insert(position, timeInMiliSeconds.toString());
-                            });
+                        if (timeInMiliSeconds.toString() !== 'NaN') {
+                            if (editor) {
+                                editor.edit((editBuilder) => {
+                                    const position = editor.selection.active;
+                                    editBuilder.insert(position, timeInMiliSeconds.toString());
+                                });
+                            }
+                        } else {
+                            return vscode.window.showErrorMessage('Invalid Input, pass 1 day, 10 hr, 30 min etc...');
                         }
                     }
                 }
@@ -93,6 +106,11 @@ const convertTimeToSecond = async (options: any[]) => {
         resolve(option);
     });
 };
+
+export const dayToMS = (val: number) => 86400000 * val;
+export const hrToMS = (val: number) => 60 * 60 * 1000 * val;
+export const minToMS = (val: number) => 60 * 1000 * val;
+export const secToMS = (val: number) => 1000 * val;
 
 async function getUserSelectedValue(choices: any[]) {
     return new Promise((resolve) => {
