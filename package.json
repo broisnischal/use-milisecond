@@ -1,7 +1,8 @@
 {
     "name": "milliseconds",
     "displayName": "Use Milliseconds",
-    "publisher": "Nischal Dahal",
+    "publisher": "NischalDahalMilliseconds",
+    "icon": "./images/logo.png",
     "author": {
         "name": "Nischal Dahal",
         "email": "neeswebservice@gmail.com",
