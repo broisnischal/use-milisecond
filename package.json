@@ -1,7 +1,12 @@
 {
-    "name": "time",
-    "displayName": "Use Milisecond",
-    "description": "Convert your prompt to milisecond",
+    "name": "milliseconds",
+    "displayName": "Use Milliseconds",
+    "author": {
+        "name": "Nischal Dahal",
+        "email": "neeswebservice@gmail.com",
+        "url": "https://github.com/neeswebservices/use-milisecond"
+    },
+    "description": "Convert your prompt to milliseconds.",
     "version": "0.0.1",
     "engines": {
         "vscode": "^1.75.0"
@@ -14,7 +19,7 @@
     "contributes": {
         "commands": [
             {
-                "command": "time.useMilisecond",
+                "command": "millisecond.useMilliseconds",
                 "title": "Use Milisecond"
             }
         ]

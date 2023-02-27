@@ -14,7 +14,7 @@ function parseTimeString(timeString: string): Thenable<string | undefined> | num
     const timeValues: Record<string, number> = { year: 0, mon: 0, week: 0, day: 0, hr: 0, min: 0, sec: 0 };
 
     // Extract the time unit and value from the input string
-    const regex = /(\d+)\s*(year|mon|week|day|hr|min|sec)/gi;
+    const regex = /(\d+)\s*(year|mon|week|day|hour|hr|min|sec)/gi;
     let match;
 
     while ((match = regex.exec(timeString)) !== null) {
@@ -45,15 +45,15 @@ export function activate(context: vscode.ExtensionContext) {
     //     console.log(choosed);
     // });
 
-    let disposable = vscode.commands.registerCommand('time.useMilisecond', () => {
+    let disposable = vscode.commands.registerCommand('millisecond.useMilliseconds', () => {
         vscode.window
             .showInputBox({
-                prompt: 'Enter to convert into milisecond ?',
+                prompt: 'Enter to convert into millisecond ?',
                 value: '',
-                placeHolder: '7 day, 45 minute, 2 year,  1hr15min20sec, 1 year 3 mon 14 hr 12 min 10sec ',
+                placeHolder: '7 day, 45 minute, 2year, 1hr15min20sec, 1year 2week 3mon 14 hr 12 min 10sec ',
             })
             .then((val) => {
-                if (val === undefined || parseInt(val) === 27) {
+                if (val === undefined || parseInt(val) === 27 || val === null) {
                     return;
                 } else {
                     if (!val) {
@@ -63,7 +63,7 @@ export function activate(context: vscode.ExtensionContext) {
                         const timeInMiliSeconds = parseTimeString(passvalue);
 
                         if (timeInMiliSeconds === 0 || timeInMiliSeconds === undefined) {
-                            return vscode.window.showErrorMessage('Milisecond : Please provide valid Input!');
+                            return vscode.window.showErrorMessage('Millisecond : Please provide valid Input!');
                         }
 
                         usedHistory.unshift(timeInMiliSeconds);
