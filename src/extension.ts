@@ -2,16 +2,19 @@ import * as vscode from 'vscode';
 
 function parseTimeString(timeString: string): Thenable<string | undefined> | number {
     const timeUnits: Record<string, number> = {
+        year: 2629746000 * 12,
+        mon: 2629746000 * 1,
+        week: 604800000,
         day: 24 * 60 * 60 * 1000,
         hr: 60 * 60 * 1000,
         min: 60 * 1000,
         sec: 1000,
     };
 
-    const timeValues: Record<string, number> = { day: 0, hr: 0, min: 0, sec: 0 };
+    const timeValues: Record<string, number> = { year: 0, mon: 0, week: 0, day: 0, hr: 0, min: 0, sec: 0 };
 
     // Extract the time unit and value from the input string
-    const regex = /(\d+)\s*(day|hr|min|sec)/gi;
+    const regex = /(\d+)\s*(year|mon|week|day|hr|min|sec)/gi;
     let match;
 
     while ((match = regex.exec(timeString)) !== null) {
@@ -21,7 +24,6 @@ function parseTimeString(timeString: string): Thenable<string | undefined> | num
         timeValues[unit] = value;
     }
 
-    // Calculate the total time in milliseconds
     let totalMilliseconds = 0;
 
     for (const unit in timeUnits) {
@@ -31,30 +33,11 @@ function parseTimeString(timeString: string): Thenable<string | undefined> | num
     return totalMilliseconds;
 }
 
+let usedHistory: (number | Thenable<string | undefined>)[] = [];
+
 export function activate(context: vscode.ExtensionContext) {
     console.log('Use second is now active!');
-    let options = [
-        {
-            label: 'sec',
-            detail: 'second sec',
-            type: 'second',
-        },
-        {
-            label: 'min',
-            detail: 'minute min',
-            type: 'minute',
-        },
-        {
-            label: 'hr',
-            detail: 'hours hr hrs',
-            type: 'second',
-        },
-        {
-            label: 'day',
-            detail: 'day days',
-            type: 'day',
-        },
-    ];
+
     // let disposable = vscode.commands.registerCommand('time.useMilisecond', async () => {
     //     // vscode.window.showQuickPick(options);
     //     // await getUserSelectedValue(options);
@@ -65,13 +48,13 @@ export function activate(context: vscode.ExtensionContext) {
     let disposable = vscode.commands.registerCommand('time.useMilisecond', () => {
         vscode.window
             .showInputBox({
-                prompt: 'Time to convert into milisecond ?',
+                prompt: 'Enter to convert into milisecond ?',
                 value: '',
-                placeHolder: '7 day, 45 minute, 2 year,  1hr15min20sec, ',
+                placeHolder: '7 day, 45 minute, 2 year,  1hr15min20sec, 1 year 3 mon 14 hr 12 min 10sec ',
             })
             .then((val) => {
-                if (val === undefined) {
-                    vscode.window.showErrorMessage('Invalid Input, Please enter correct format! ');
+                if (val === undefined || parseInt(val) === 27) {
+                    return;
                 } else {
                     if (!val) {
                         return;
@@ -80,15 +63,40 @@ export function activate(context: vscode.ExtensionContext) {
                         const timeInMiliSeconds = parseTimeString(passvalue);
 
                         if (timeInMiliSeconds === 0 || timeInMiliSeconds === undefined) {
-                            return vscode.window.showErrorMessage('Invalid Input');
+                            return vscode.window.showErrorMessage('Milisecond : Please provide valid Input!');
                         }
+
+                        usedHistory.unshift(timeInMiliSeconds);
+
+                        if (usedHistory.length > 5) {
+                            usedHistory.pop();
+                        }
+
+                        // vscode.window.showQuickPick(usedHistory);
 
                         const editor = vscode.window.activeTextEditor;
                         if (timeInMiliSeconds.toString() !== 'NaN') {
                             if (editor) {
                                 editor.edit((editBuilder) => {
                                     const position = editor.selection.active;
-                                    editBuilder.insert(position, ' ' + timeInMiliSeconds.toString());
+                                    const currentPosition = editor.selection.active;
+
+                                    if (currentPosition.character === 0) {
+                                        // console.log('here');
+                                        return editBuilder.insert(position, timeInMiliSeconds.toString());
+                                    } else {
+                                        // console.log('there');
+                                        const previousPosition = currentPosition.with(undefined, currentPosition.character - 1);
+                                        const previousCharacter = editor.document.getText(new vscode.Range(previousPosition, currentPosition));
+
+                                        if (previousCharacter === ' ') {
+                                            return editBuilder.insert(position, timeInMiliSeconds.toString());
+                                            // vscode.window.showInformationMessage('Previous character is a space');
+                                        } else {
+                                            return editBuilder.insert(position, ' ' + timeInMiliSeconds.toString());
+                                            // vscode.window.showInformationMessage('Previous character is not a space');
+                                        }
+                                    }
                                 });
                             }
                         } else {
