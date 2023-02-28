@@ -1,11 +1,12 @@
+import moment = require('moment');
 import * as vscode from 'vscode';
 
 function parseTimeString(timeString: string): Thenable<string | undefined> | number {
     const timeUnits: Record<string, number> = {
-        year: 2629746000 * 12,
-        mon: 2629746000 * 1,
-        week: 604800000,
-        day: 24 * 60 * 60 * 1000,
+        year: moment.duration(1, 'year').asMilliseconds(),
+        mon: moment.duration(1, 'month').asMilliseconds(),
+        week: moment.duration(1, 'week').asMilliseconds(),
+        day: moment.duration(1, 'day').asMilliseconds(),
         hr: 60 * 60 * 1000,
         min: 60 * 1000,
         sec: 1000,
@@ -33,7 +34,7 @@ function parseTimeString(timeString: string): Thenable<string | undefined> | num
     return totalMilliseconds;
 }
 
-let usedHistory: (number | Thenable<string | undefined>)[] = [];
+let usedHistory: (number | string | Thenable<string | undefined>)[] = [];
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('Use second is now active!');
@@ -46,11 +47,20 @@ export function activate(context: vscode.ExtensionContext) {
     // });
 
     let disposable = vscode.commands.registerCommand('millisecond.useMilliseconds', () => {
+        function toStr(arr: any[]) {
+            let txt = '';
+            arr.map((i) => {
+                txt += ` ${i}, `;
+            });
+            return txt;
+        }
+
+        let placeHolderStr = usedHistory.length > 2 ? `Your searches : ${toStr(usedHistory)}` : `7 day, 45 minute, 2year, 1hr15min20sec, 1year 2week 3mon 14 hr 12 min 10sec `;
         vscode.window
             .showInputBox({
                 prompt: 'Enter to convert into millisecond ?',
                 value: '',
-                placeHolder: '7 day, 45 minute, 2year, 1hr15min20sec, 1year 2week 3mon 14 hr 12 min 10sec ',
+                placeHolder: placeHolderStr,
             })
             .then((val) => {
                 if (val === undefined || parseInt(val) === 27 || val === null) {
@@ -59,14 +69,14 @@ export function activate(context: vscode.ExtensionContext) {
                     if (!val) {
                         return;
                     } else {
-                        let passvalue = val.replace(/[\s,.]+/g, '');
+                        let passvalue = val.replace(/(and)[\s,.]+/gi, '');
                         const timeInMiliSeconds = parseTimeString(passvalue);
 
                         if (timeInMiliSeconds === 0 || timeInMiliSeconds === undefined) {
                             return vscode.window.showErrorMessage('Millisecond : Please provide valid Input!');
                         }
 
-                        usedHistory.unshift(timeInMiliSeconds);
+                        usedHistory.unshift(val);
 
                         if (usedHistory.length > 5) {
                             usedHistory.pop();
@@ -82,22 +92,21 @@ export function activate(context: vscode.ExtensionContext) {
                                     const currentPosition = editor.selection.active;
 
                                     if (currentPosition.character === 0) {
-                                        // console.log('here');
                                         return editBuilder.insert(position, timeInMiliSeconds.toString());
                                     } else {
-                                        // console.log('there');
                                         const previousPosition = currentPosition.with(undefined, currentPosition.character - 1);
                                         const previousCharacter = editor.document.getText(new vscode.Range(previousPosition, currentPosition));
 
                                         if (previousCharacter === ' ') {
                                             return editBuilder.insert(position, timeInMiliSeconds.toString());
-                                            // vscode.window.showInformationMessage('Previous character is a space');
                                         } else {
                                             return editBuilder.insert(position, ' ' + timeInMiliSeconds.toString());
-                                            // vscode.window.showInformationMessage('Previous character is not a space');
                                         }
                                     }
                                 });
+                            } else {
+                                vscode.env.clipboard.writeText(timeInMiliSeconds.toString());
+                                return vscode.window.showInformationMessage('Copied : Time in milliseconds is ' + timeInMiliSeconds + '.');
                             }
                         } else {
                             return vscode.window.showErrorMessage('Invalid Input, pass 1 day 10 hr 30 min etc...');
@@ -123,11 +132,6 @@ const convertTimeToSecond = async (options: any[]) => {
     });
 };
 
-// export const dayToMS = (val: number) => 86400000 * val;
-// export const hrToMS = (val: number) => 60 * 60 * 1000 * val;
-// export const minToMS = (val: number) => 60 * 1000 * val;
-// export const secToMS = (val: number) => 1000 * val;
-
 async function getUserSelectedValue(choices: any[]) {
     return new Promise((resolve) => {
         const quickPick = vscode.window.createQuickPick();
@@ -151,5 +155,5 @@ async function getUserSelectedValue(choices: any[]) {
 }
 
 export function deactivate() {
-    console.log('Extension is Inactive now!');
+    // console.log('Extension is Inactive now!');
 }
