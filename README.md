@@ -1,16 +1,24 @@
-# time
+# Millisecond
 
-use cmd + shift + p | ctrl + shift + p and search 'use milliseconds' to convert prompt to milliseconds
+use **_(cmd + shift + p)_** | **_(ctrl + shift + p)_** and search 'use milliseconds' to activate millisecond to run.
 
 ## Features
 
-It insert the milliseconds accon to the user prompts, suppose user types 1 hr, it writes 60000 which is in milliseconds,
+## use **shift+alt+n** being in active editor to run!
 
-example prompt :
-1 year 2 mon 3 week 4 day 15hr 5minute 9sec
+![Opens](https://res.cloudinary.com/dmqcdiwlq/image/upload/v1677575542/Screenshot_from_2023-02-28_14-55-23_vftdsa.png)
 
-<!-- \!\[feature X\]\(images/feature-x.png\) -->
+#### It insert the milliseconds accon to the user prompts, suppose user types 1 hr, it writes 60000 which is in milliseconds.
 
-### 1.0.0
+<br>
 
-Initial release of Milliseconds
+Example 🚀 :
+
+-   1 year 2 mon 3 week 4 day 15hr 5minute 9sec\
+-   4 year 3mon 6 week and 3 days
+
+### 0.5.0
+
+Publish release of Milliseconds
+
+created_by : [neeswebservice](https://github.com/neeswebservices)
