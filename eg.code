@@ -1,3 +1,6 @@
+
+
+
 const timeString = '1day 3hr 23min';
 
 const lowerTimeString = timeString.replace(/\s/g, '').toLowerCase();
@@ -12,7 +15,6 @@ let timeUnits = {
 let timeValues = {};
 
 let matches = timeString.match(/(\d+)([a-z]+)/gi);
-
 if (matches !== null) {
   matches.forEach((match) => {
     let value = parseInt(match.match(/\d+/)[0]);
