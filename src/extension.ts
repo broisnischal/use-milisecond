@@ -87,7 +87,10 @@ export function activate(context: vscode.ExtensionContext) {
                         if (String(passvalue).match(/[^a-zA-Z0-9,]/)) {
                             return vscode.window.showErrorMessage('Millisecond : Includes invalid characters and symbols!');
                         }
-                        console.log(typeof passvalue);
+
+                        if (String(passvalue).match(/^\d+$/) && passvalue !== null) {
+                            passvalue += 'sec';
+                        }
 
                         const timeInMiliSeconds = parseTimeString(passvalue);
 
