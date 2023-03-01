@@ -83,13 +83,19 @@ export function activate(context: vscode.ExtensionContext) {
                         return;
                     } else {
                         let passvalue = val.replace(/(and)[\s,.]+/gi, '');
-
-                        if (String(passvalue).match(/[^a-zA-Z0-9,]/)) {
-                            return vscode.window.showErrorMessage('Millisecond : Includes invalid characters and symbols!');
-                        }
-
-                        if (String(passvalue).match(/^\d+$/) && passvalue !== null) {
+                        if (String(passvalue).match(/^\d+$/)) {
                             passvalue += 'sec';
+                            let newRtn = parseTimeString(passvalue);
+                            console.log(newRtn);
+                        }
+                        if (!String(passvalue).match(/[^a-zA-Z0-9,]/g)) {
+                            if (String(passvalue).match(/^\d+$/)) {
+                                passvalue += 'sec';
+                                // let newRtn = parseTimeString(passvalue);
+                                // console.log(newRtn);
+                            } else {
+                                return vscode.window.showErrorMessage('Millisecond: Invalid characters or input!');
+                            }
                         }
 
                         const timeInMiliSeconds = parseTimeString(passvalue);
