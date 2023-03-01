@@ -4,18 +4,20 @@ import * as vscode from 'vscode';
 function parseTimeString(timeString: string): Thenable<string | undefined> | number {
     const timeUnits: Record<string, number> = {
         year: moment.duration(1, 'year').asMilliseconds(),
+        yr: moment.duration(1, 'year').asMilliseconds(),
         mon: moment.duration(1, 'month').asMilliseconds(),
         week: moment.duration(1, 'week').asMilliseconds(),
         day: moment.duration(1, 'day').asMilliseconds(),
+        hour: 60 * 60 * 1000,
         hr: 60 * 60 * 1000,
         min: 60 * 1000,
         sec: 1000,
     };
 
-    const timeValues: Record<string, number> = { year: 0, mon: 0, week: 0, day: 0, hr: 0, min: 0, sec: 0 };
+    const timeValues: Record<string, number> = { year: 0, yr: 0, mon: 0, week: 0, day: 0, hour: 0, hr: 0, min: 0, sec: 0 };
 
     // Extract the time unit and value from the input string
-    const regex = /(\d+)\s*(year|mon|week|day|hour|hr|min|sec)/gi;
+    const regex = /(\d+)\s*(year|yr|mon|week|day|hour|hr|min|sec)/gi;
     let match;
 
     while ((match = regex.exec(timeString)) !== null) {
@@ -111,26 +113,37 @@ export function activate(context: vscode.ExtensionContext) {
                             const editor = vscode.window.activeTextEditor;
                             if (timeInMiliSeconds.toString() !== 'NaN') {
                                 if (editor) {
-                                    editor.edit((editBuilder) => {
-                                        const position = editor.selection.active;
-                                        const currentPosition = editor.selection.active;
+                                    const selection = editor.selection;
+                                    const text = editor.document.getText(selection);
+                                    editor
+                                        .edit((editBuilder) => {
+                                            const position = editor.selection.active;
+                                            const currentPosition = editor.selection.active;
 
-                                        // saves history
-                                        context.workspaceState.update('searches', usedHistory);
+                                            if (text) {
+                                                return editBuilder.replace(selection, timeInMiliSeconds.toString() + ' ');
+                                            }
 
-                                        if (currentPosition.character === 0) {
-                                            return editBuilder.insert(position, timeInMiliSeconds.toString());
-                                        } else {
-                                            const previousPosition = currentPosition.with(undefined, currentPosition.character - 1);
-                                            const previousCharacter = editor.document.getText(new vscode.Range(previousPosition, currentPosition));
+                                            // saves history
+                                            context.workspaceState.update('searches', usedHistory);
 
-                                            if (previousCharacter === ' ') {
+                                            if (currentPosition.character === 0) {
                                                 return editBuilder.insert(position, timeInMiliSeconds.toString());
                                             } else {
-                                                return editBuilder.insert(position, ' ' + timeInMiliSeconds.toString());
+                                                const previousPosition = currentPosition.with(undefined, currentPosition.character - 1);
+                                                const previousCharacter = editor.document.getText(new vscode.Range(previousPosition, currentPosition));
+
+                                                if (previousCharacter === ' ') {
+                                                    return editBuilder.insert(position, timeInMiliSeconds.toString());
+                                                } else {
+                                                    return editBuilder.insert(position, ' ' + timeInMiliSeconds.toString());
+                                                }
                                             }
-                                        }
-                                    });
+                                        })
+                                        .then(() => {
+                                            const newPosition = selection.active.with(undefined, editor.document.lineAt(selection.active.line).range.end.character);
+                                            editor.selection = new vscode.Selection(newPosition, newPosition);
+                                        });
                                 } else {
                                     vscode.env.clipboard.writeText(timeInMiliSeconds.toString());
                                     return vscode.window.showInformationMessage('Copied : Time in milliseconds is ' + timeInMiliSeconds + '.');
