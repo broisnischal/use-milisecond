@@ -39,6 +39,6 @@ Object.keys(timeValues).forEach((unit) => {
   totalMiliseconds += timeValues[unit] * timeUnits[unit];
 });
 
-console.log(timeValues);
 
-console.log(totalMiliseconds);
+
+
