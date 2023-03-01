@@ -8,7 +8,7 @@
         "email": "neeswebservice@gmail.com",
         "url": "https://github.com/neeswebservices/use-milisecond"
     },
-    "description": "Convert your prompt to milliseconds.",
+    "description": "No more search to millisecond, Instant conversion to MS.",
     "version": "0.8.0",
     "engines": {
         "vscode": "^1.75.0"
