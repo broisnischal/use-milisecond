@@ -83,64 +83,63 @@ export function activate(context: vscode.ExtensionContext) {
                         return;
                     } else {
                         let passvalue = val.replace(/(and)[\s,.]+/gi, '');
-                        if (String(passvalue).match(/^\d+$/)) {
-                            passvalue += 'sec';
-                            let newRtn = parseTimeString(passvalue);
-                            console.log(newRtn);
-                        }
-                        if (!String(passvalue).match(/[^a-zA-Z0-9,]/g)) {
+                        let second: number | Thenable<string | undefined>;
+
+                        if (!String(passvalue).match(/[^a-zA-Z0-9, ]/g)) {
+                            let timeInMiliSeconds: any;
                             if (String(passvalue).match(/^\d+$/)) {
-                                passvalue += 'sec';
-                                // let newRtn = parseTimeString(passvalue);
-                                // console.log(newRtn);
+                                // passvalue += 'sec';
+                                // second = parseTimeString(passvalue);
+                                // console.log(passvalue);
+                                timeInMiliSeconds = parseTimeString(passvalue + 'sec');
                             } else {
-                                return vscode.window.showErrorMessage('Millisecond: Invalid characters or input!');
+                                timeInMiliSeconds = parseTimeString(passvalue);
                             }
-                        }
 
-                        const timeInMiliSeconds = parseTimeString(passvalue);
+                            if (timeInMiliSeconds === 0 || timeInMiliSeconds === undefined) {
+                                return vscode.window.showErrorMessage('Millisecond : Please provide valid Input!');
+                            }
 
-                        if (timeInMiliSeconds === 0 || timeInMiliSeconds === undefined) {
-                            return vscode.window.showErrorMessage('Millisecond : Please provide valid Input!');
-                        }
+                            usedHistory.unshift(val);
 
-                        usedHistory.unshift(val);
+                            if (usedHistory.length > 5) {
+                                usedHistory.pop();
+                            }
 
-                        if (usedHistory.length > 5) {
-                            usedHistory.pop();
-                        }
+                            // vscode.window.showQuickPick(usedHistory);
 
-                        // vscode.window.showQuickPick(usedHistory);
+                            const editor = vscode.window.activeTextEditor;
+                            if (timeInMiliSeconds.toString() !== 'NaN') {
+                                if (editor) {
+                                    editor.edit((editBuilder) => {
+                                        const position = editor.selection.active;
+                                        const currentPosition = editor.selection.active;
 
-                        const editor = vscode.window.activeTextEditor;
-                        if (timeInMiliSeconds.toString() !== 'NaN') {
-                            if (editor) {
-                                editor.edit((editBuilder) => {
-                                    const position = editor.selection.active;
-                                    const currentPosition = editor.selection.active;
+                                        // saves history
+                                        context.workspaceState.update('searches', usedHistory);
 
-                                    // saves history
-                                    context.workspaceState.update('searches', usedHistory);
-
-                                    if (currentPosition.character === 0) {
-                                        return editBuilder.insert(position, timeInMiliSeconds.toString());
-                                    } else {
-                                        const previousPosition = currentPosition.with(undefined, currentPosition.character - 1);
-                                        const previousCharacter = editor.document.getText(new vscode.Range(previousPosition, currentPosition));
-
-                                        if (previousCharacter === ' ') {
+                                        if (currentPosition.character === 0) {
                                             return editBuilder.insert(position, timeInMiliSeconds.toString());
                                         } else {
-                                            return editBuilder.insert(position, ' ' + timeInMiliSeconds.toString());
+                                            const previousPosition = currentPosition.with(undefined, currentPosition.character - 1);
+                                            const previousCharacter = editor.document.getText(new vscode.Range(previousPosition, currentPosition));
+
+                                            if (previousCharacter === ' ') {
+                                                return editBuilder.insert(position, timeInMiliSeconds.toString());
+                                            } else {
+                                                return editBuilder.insert(position, ' ' + timeInMiliSeconds.toString());
+                                            }
                                         }
-                                    }
-                                });
+                                    });
+                                } else {
+                                    vscode.env.clipboard.writeText(timeInMiliSeconds.toString());
+                                    return vscode.window.showInformationMessage('Copied : Time in milliseconds is ' + timeInMiliSeconds + '.');
+                                }
                             } else {
-                                vscode.env.clipboard.writeText(timeInMiliSeconds.toString());
-                                return vscode.window.showInformationMessage('Copied : Time in milliseconds is ' + timeInMiliSeconds + '.');
+                                return vscode.window.showErrorMessage('Invalid Input, pass 1 day 10 hr 30 min etc...');
                             }
                         } else {
-                            return vscode.window.showErrorMessage('Invalid Input, pass 1 day 10 hr 30 min etc...');
+                            return vscode.window.showErrorMessage('Millisecond: Invalid Symbols in Input!');
                         }
                     }
                 }
