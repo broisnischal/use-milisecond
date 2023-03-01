@@ -43,7 +43,7 @@ export function activate(context: vscode.ExtensionContext) {
     //     // vscode.window.showQuickPick(options);
     //     // await getUserSelectedValue(options);
     //     const choosed = await convertTimeToSecond(options);
-    //     console.log(choosed);
+    //
     // });
 
     let disposable = vscode.commands.registerCommand('millisecond.useMilliseconds', () => {
@@ -52,10 +52,23 @@ export function activate(context: vscode.ExtensionContext) {
             arr.map((i) => {
                 txt += ` ${i}, `;
             });
-            return txt;
+
+            let trunked = txt.slice(0, -1);
+
+            if (trunked.endsWith(' ')) {
+                trunked = trunked.trimEnd().slice(0, -1);
+            }
+            if (trunked.endsWith(',')) {
+                trunked = trunked.trimEnd().slice(0, -1);
+            }
+
+            trunked += '...';
+            return trunked;
         }
 
-        let placeHolderStr = usedHistory.length > 2 ? `Your searches : ${toStr(usedHistory)}` : `7 day, 45 minute, 2year, 1hr15min20sec, 1year 2week 3mon 14 hr 12 min 10sec `;
+        let searches: [] = context.workspaceState.get('searches') ?? [];
+
+        let placeHolderStr = usedHistory.length > 2 ? `Your searches : ${toStr(Array.from(searches))}` : `7 day, 45 minute, 2year, 1hr15min20sec, 1year 2week 3mon 14 hr 12 min 10sec `;
         vscode.window
             .showInputBox({
                 prompt: 'Enter to convert into millisecond ?',
@@ -70,6 +83,12 @@ export function activate(context: vscode.ExtensionContext) {
                         return;
                     } else {
                         let passvalue = val.replace(/(and)[\s,.]+/gi, '');
+
+                        if (String(passvalue).match(/[^a-zA-Z0-9,]/)) {
+                            return vscode.window.showErrorMessage('Millisecond : Includes invalid characters and symbols!');
+                        }
+                        console.log(typeof passvalue);
+
                         const timeInMiliSeconds = parseTimeString(passvalue);
 
                         if (timeInMiliSeconds === 0 || timeInMiliSeconds === undefined) {
@@ -90,6 +109,9 @@ export function activate(context: vscode.ExtensionContext) {
                                 editor.edit((editBuilder) => {
                                     const position = editor.selection.active;
                                     const currentPosition = editor.selection.active;
+
+                                    // saves history
+                                    context.workspaceState.update('searches', usedHistory);
 
                                     if (currentPosition.character === 0) {
                                         return editBuilder.insert(position, timeInMiliSeconds.toString());
