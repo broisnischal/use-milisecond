@@ -148,68 +148,73 @@ export function activate(context: vscode.ExtensionContext) {
                                                 .edit((editBuilder) => {
                                                     const lineEnd = editor.document.lineAt(selection.active.line).range.end.character;
                                                     let comment: string = '';
-                                                    console.log(fileExtension);
 
-                                                    switch (fileExtension) {
-                                                        case 'js':
-                                                            comment = '// ' + usedHistory[0];
-                                                            break;
-                                                        case 'ts':
-                                                            comment = ` // ${usedHistory[0]}`;
-                                                            break;
-                                                        case 'html':
-                                                            comment = ` <!-- ${usedHistory[0]} -->`;
-                                                            break;
-                                                        case 'css':
-                                                            comment = ` /* ${usedHistory[0]} */`;
-                                                            break;
-                                                        case 'py':
-                                                            comment = ` # ${usedHistory[0]}`;
-                                                            break;
-                                                        case 'rb':
-                                                            comment = ` # ${usedHistory[0]}`;
-                                                            break;
-                                                        case 'php':
-                                                            comment = ` /* ${usedHistory[0]} */`;
-                                                            break;
-                                                        case 'java':
-                                                            comment = ` /* ${usedHistory[0]} */`;
-                                                            break;
-                                                        case 'c':
-                                                            comment = ` /* ${usedHistory[0]} */`;
-                                                            break;
-                                                        case 'cpp':
-                                                            comment = ` /* ${usedHistory[0]} */`;
-                                                            break;
-                                                        case 'swift':
-                                                            comment = ` /* ${usedHistory[0]} */`;
-                                                            break;
-                                                        case 'go':
-                                                            comment = ` /* ${usedHistory[0]} */`;
-                                                            break;
-                                                        case 'cs':
-                                                            comment = ` /* ${usedHistory[0]} */`;
-                                                            break;
-                                                        case 'vb':
-                                                            comment = ` /* ${usedHistory[0]} */`;
-                                                            break;
-                                                        case 'scala':
-                                                            comment = ` /* ${usedHistory[0]} */`;
-                                                            break;
-                                                        case 'sc':
-                                                            comment = ` /* ${usedHistory[0]} */`;
-                                                            break;
-                                                        case 'rs':
-                                                            comment = ` /* ${usedHistory[0]} */`;
-                                                            break;
-                                                        case 'kts':
-                                                            comment = ` /* ${usedHistory[0]} */`;
-                                                            break;
-                                                        default:
-                                                            comment = '';
-                                                            break;
+                                                    if (String(usedHistory[0]).match(/^\d+$/)) {
+                                                        return;
+                                                    } else {
+                                                        switch (fileExtension) {
+                                                            case 'js':
+                                                                comment = ' // ' + usedHistory[0];
+                                                                break;
+                                                            case 'ts':
+                                                                comment = ` // ${usedHistory[0]}`;
+                                                                break;
+                                                            case 'html':
+                                                                comment = ` <!-- ${usedHistory[0]} -->`;
+                                                                break;
+                                                            case 'css':
+                                                                comment = ` /* ${usedHistory[0]} */`;
+                                                                break;
+                                                            case 'py':
+                                                                comment = ` # ${usedHistory[0]}`;
+                                                                break;
+                                                            case 'rb':
+                                                                comment = ` # ${usedHistory[0]}`;
+                                                                break;
+                                                            case 'php':
+                                                                comment = ` /* ${usedHistory[0]} */`;
+                                                                break;
+                                                            case 'java':
+                                                                comment = ` /* ${usedHistory[0]} */`;
+                                                                break;
+                                                            case 'c':
+                                                                comment = ` /* ${usedHistory[0]} */`;
+                                                                break;
+                                                            case 'cpp':
+                                                                comment = ` /* ${usedHistory[0]} */`;
+                                                                break;
+                                                            case 'swift':
+                                                                comment = ` /* ${usedHistory[0]} */`;
+                                                                break;
+                                                            case 'go':
+                                                                comment = ` /* ${usedHistory[0]} */`;
+                                                                break;
+                                                            case 'cs':
+                                                                comment = ` /* ${usedHistory[0]} */`;
+                                                                break;
+                                                            case 'vb':
+                                                                comment = ` /* ${usedHistory[0]} */`;
+                                                                break;
+                                                            case 'scala':
+                                                                comment = ` /* ${usedHistory[0]} */`;
+                                                                break;
+                                                            case 'sc':
+                                                                comment = ` /* ${usedHistory[0]} */`;
+                                                                break;
+                                                            case 'rs':
+                                                                comment = ` /* ${usedHistory[0]} */`;
+                                                                break;
+                                                            case 'kts':
+                                                                comment = ` /* ${usedHistory[0]} */`;
+                                                                break;
+                                                            case 'env':
+                                                                comment = ` # ${usedHistory[0]} `;
+                                                                break;
+                                                            default:
+                                                                comment = '';
+                                                                break;
+                                                        }
                                                     }
-
                                                     editBuilder.insert(new vscode.Position(selection.active.line, lineEnd), comment);
                                                 })
                                                 .then(() => {
