@@ -19,6 +19,16 @@
     "activationEvents": [],
     "main": "./out/extension.js",
     "contributes": {
+        "configuration": {
+            "title": "Milliseconds",
+            "properties": {
+                "milliseconds.useCommentOnOutput": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Adds comment of time in the text editor."
+                }
+            }
+        },
         "commands": [
             {
                 "command": "millisecond.useMilliseconds",
