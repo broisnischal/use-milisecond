@@ -87,7 +87,7 @@ export function activate(context: vscode.ExtensionContext) {
                     if (!val) {
                         return;
                     } else {
-                        let passvalue = val.replace(/(and)[\s,.]+/gi, '');
+                        let passvalue = val.replace(/(and)[\s,.]+/gi, '').trim();
                         let second: number | Thenable<string | undefined>;
 
                         if (!String(passvalue).match(/[^a-zA-Z0-9, ]/g)) {
@@ -159,6 +159,12 @@ export function activate(context: vscode.ExtensionContext) {
                                                             switch (fileExtension) {
                                                                 case 'js':
                                                                     comment = ' // ' + usedHistory[0];
+                                                                    break;
+                                                                case 'jsx':
+                                                                    comment = ` { /* ${usedHistory[0]} */ }`;
+                                                                    break;
+                                                                case 'tsx':
+                                                                    comment = ` { /* ${usedHistory[0]} */ }`;
                                                                     break;
                                                                 case 'ts':
                                                                     comment = ` // ${usedHistory[0]}`;
