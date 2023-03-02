@@ -69,6 +69,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         const config = vscode.workspace.getConfiguration('milliseconds');
+
         const enableCommentFeature = config.get('useCommentOnOutput');
 
         let searches: [] = context.workspaceState.get('searches') ?? [];
@@ -157,10 +158,10 @@ export function activate(context: vscode.ExtensionContext) {
                                                             return;
                                                         } else {
                                                             switch (fileExtension) {
-                                                                case 'js' || 'ts':
-                                                                    comment = ' // ' + usedHistory[0];
+                                                                case 'js' && 'ts':
+                                                                    comment = ' // ' + String(usedHistory[0]).trim();
                                                                     break;
-                                                                case 'jsx' || 'tsx':
+                                                                case 'jsx' && 'tsx':
                                                                     // let document = editor.document;
                                                                     // let selection = editor.selection;
                                                                     // const position = selection.active;
