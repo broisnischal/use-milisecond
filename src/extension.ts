@@ -187,7 +187,7 @@ export function activate(context: vscode.ExtensionContext) {
                                                         case 'go':
                                                             comment = ` // ${usedHistory[0]}`;
                                                             break;
-                                                        case 'csharp':
+                                                        case 'cs':
                                                             comment = ` // ${usedHistory[0]}`;
                                                             break;
                                                         case 'vb':
@@ -196,10 +196,13 @@ export function activate(context: vscode.ExtensionContext) {
                                                         case 'scala':
                                                             comment = ` // ${usedHistory[0]}`;
                                                             break;
-                                                        case 'rust':
+                                                        case 'sc':
                                                             comment = ` // ${usedHistory[0]}`;
                                                             break;
-                                                        case 'kotlin':
+                                                        case 'rs':
+                                                            comment = ` // ${usedHistory[0]}`;
+                                                            break;
+                                                        case 'kts':
                                                             comment = ` // ${usedHistory[0]}`;
                                                             break;
                                                         default:
