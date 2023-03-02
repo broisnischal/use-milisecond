@@ -157,18 +157,22 @@ export function activate(context: vscode.ExtensionContext) {
                                                             return;
                                                         } else {
                                                             switch (fileExtension) {
-                                                                case 'js':
+                                                                case 'js' || 'ts':
                                                                     comment = ' // ' + usedHistory[0];
                                                                     break;
-                                                                case 'jsx':
-                                                                    comment = ` { /* ${usedHistory[0]} */ }`;
+                                                                case 'jsx' || 'tsx':
+                                                                    // let document = editor.document;
+                                                                    // let selection = editor.selection;
+                                                                    // const position = selection.active;
+
+                                                                    // // const tags = text.match(/(<\w+\b[^>]*>)|(<\/\w+\b[^>]*>)/g);
+
+                                                                    // console.log(isCursorInsideJSXElement(document, position));
+
+                                                                    // comment = ` { /* ${usedHistory[0]} */ }`;
+                                                                    comment = ` `;
                                                                     break;
-                                                                case 'tsx':
-                                                                    comment = ` { /* ${usedHistory[0]} */ }`;
-                                                                    break;
-                                                                case 'ts':
-                                                                    comment = ` // ${usedHistory[0]}`;
-                                                                    break;
+
                                                                 case 'html':
                                                                     comment = ` <!-- ${usedHistory[0]} -->`;
                                                                     break;
@@ -287,4 +291,27 @@ async function getUserSelectedValue(choices: any[]) {
 
 export function deactivate() {
     // console.log('Extension is Inactive now!');
+}
+
+function isCursorInsideJSXElement(document: vscode.TextDocument, position: vscode.Position): boolean {
+    const text = document.getText();
+    const openingTagRegex = /<\w+\b[^>]*>/g;
+    const closingTagRegex = /<\/\w+\b[^>]*>/g;
+    let insideJSXElement = false;
+    let tagMatch: RegExpMatchArray | null;
+    while ((tagMatch = openingTagRegex.exec(text))) {
+        const openingTagStartIndex: any = tagMatch.index;
+        const openingTagName = tagMatch[0].match(/<(\w+)\b/)?.[1];
+        if (openingTagName) {
+            const closingTagMatch = text.match(new RegExp(`<\\/${openingTagName}\\b[^>]*>`, 'g'))?.find((match) => text.indexOf(match) > openingTagStartIndex);
+            if (closingTagMatch) {
+                const closingTagStartIndex = text.indexOf(closingTagMatch);
+                if (position.isAfterOrEqual(new vscode.Position(openingTagStartIndex + 1, 0)) && position.isBefore(new vscode.Position(closingTagStartIndex, 0))) {
+                    insideJSXElement = true;
+                    break;
+                }
+            }
+        }
+    }
+    return insideJSXElement;
 }
