@@ -39,7 +39,7 @@ function parseTimeString(timeString: string): Thenable<string | undefined> | num
 let usedHistory: (number | string | Thenable<string | undefined>)[] = [];
 
 export function activate(context: vscode.ExtensionContext) {
-    console.log('Use second is now active!');
+    // console.log('Use second is now active!');
 
     // let disposable = vscode.commands.registerCommand('time.useMilisecond', async () => {
     //     // vscode.window.showQuickPick(options);
@@ -128,21 +128,31 @@ export function activate(context: vscode.ExtensionContext) {
                                             context.workspaceState.update('searches', usedHistory);
 
                                             if (currentPosition.character === 0) {
-                                                return editBuilder.insert(position, timeInMiliSeconds.toString());
+                                                return editBuilder.insert(position, timeInMiliSeconds.toString() + ' ');
                                             } else {
                                                 const previousPosition = currentPosition.with(undefined, currentPosition.character - 1);
                                                 const previousCharacter = editor.document.getText(new vscode.Range(previousPosition, currentPosition));
 
                                                 if (previousCharacter === ' ') {
-                                                    return editBuilder.insert(position, timeInMiliSeconds.toString());
+                                                    return editBuilder.insert(position, timeInMiliSeconds.toString() + ' ');
                                                 } else {
-                                                    return editBuilder.insert(position, ' ' + timeInMiliSeconds.toString());
+                                                    return editBuilder.insert(position, ' ' + timeInMiliSeconds.toString() + ' ');
                                                 }
                                             }
                                         })
                                         .then(() => {
                                             const newPosition = selection.active.with(undefined, editor.document.lineAt(selection.active.line).range.end.character);
                                             editor.selection = new vscode.Selection(newPosition, newPosition);
+                                            editor
+                                                .edit((editBuilder) => {
+                                                    const lineEnd = editor.document.lineAt(selection.active.line).range.end.character;
+                                                    const comment = '// ' + usedHistory[0];
+                                                    editBuilder.insert(new vscode.Position(selection.active.line, lineEnd), comment);
+                                                })
+                                                .then(() => {
+                                                    const newPosition = selection.active.with(undefined, editor.document.lineAt(selection.active.line).range.end.character);
+                                                    editor.selection = new vscode.Selection(newPosition, newPosition);
+                                                });
                                         });
                                 } else {
                                     vscode.env.clipboard.writeText(timeInMiliSeconds.toString());
