@@ -2,9 +2,9 @@
 
 Millisecond is a VSCode extension that allows you to convert time prompts into milliseconds and automatically write the result. This is especially useful for developers who frequently work with timeouts, intervals, and animations.
 
-## use **_(cmd + shift + p)_** | **_(ctrl + shift + p)_** and search 'use milliseconds' to activate millisecond to run.
+### use ****(cmd + shift + p)**** | **_(ctrl + shift + p)_** and search 'use milliseconds' to activate millisecond to run.
 
-## **Features**
+**Features**
 
 -   Supports a wide range of time units, such as seconds, minutes, hours, days, and more.
 -   Converts time prompts into milliseconds and writes the result.
@@ -13,7 +13,7 @@ Millisecond is a VSCode extension that allows you to convert time prompts into m
 
 <br>
 
-## use \***\*Shift+Alt+N\*\*** being in active editor to run!
+#### use | **Shift+Alt+N** | being in active editor to run!
 
 ![Opens](https://res.cloudinary.com/dmqcdiwlq/image/upload/v1677575542/Screenshot_from_2023-02-28_14-55-23_vftdsa.png)
 
