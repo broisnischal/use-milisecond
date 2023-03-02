@@ -170,40 +170,40 @@ export function activate(context: vscode.ExtensionContext) {
                                                             comment = ` # ${usedHistory[0]}`;
                                                             break;
                                                         case 'php':
-                                                            comment = ` // ${usedHistory[0]}`;
+                                                            comment = ` /* ${usedHistory[0]} */`;
                                                             break;
                                                         case 'java':
-                                                            comment = ` // ${usedHistory[0]}`;
+                                                            comment = ` /* ${usedHistory[0]} */`;
                                                             break;
                                                         case 'c':
-                                                            comment = ` // ${usedHistory[0]}`;
+                                                            comment = ` /* ${usedHistory[0]} */`;
                                                             break;
                                                         case 'cpp':
-                                                            comment = ` // ${usedHistory[0]}`;
+                                                            comment = ` /* ${usedHistory[0]} */`;
                                                             break;
                                                         case 'swift':
-                                                            comment = ` // ${usedHistory[0]}`;
+                                                            comment = ` /* ${usedHistory[0]} */`;
                                                             break;
                                                         case 'go':
-                                                            comment = ` // ${usedHistory[0]}`;
+                                                            comment = ` /* ${usedHistory[0]} */`;
                                                             break;
                                                         case 'cs':
-                                                            comment = ` // ${usedHistory[0]}`;
+                                                            comment = ` /* ${usedHistory[0]} */`;
                                                             break;
                                                         case 'vb':
-                                                            comment = ` // ${usedHistory[0]}`;
+                                                            comment = ` /* ${usedHistory[0]} */`;
                                                             break;
                                                         case 'scala':
-                                                            comment = ` // ${usedHistory[0]}`;
+                                                            comment = ` /* ${usedHistory[0]} */`;
                                                             break;
                                                         case 'sc':
-                                                            comment = ` // ${usedHistory[0]}`;
+                                                            comment = ` /* ${usedHistory[0]} */`;
                                                             break;
                                                         case 'rs':
-                                                            comment = ` // ${usedHistory[0]}`;
+                                                            comment = ` /* ${usedHistory[0]} */`;
                                                             break;
                                                         case 'kts':
-                                                            comment = ` // ${usedHistory[0]}`;
+                                                            comment = ` /* ${usedHistory[0]} */`;
                                                             break;
                                                         default:
                                                             comment = '';
