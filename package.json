@@ -1,80 +1,80 @@
 {
-    "name": "milliseconds",
-    "displayName": "Use Milliseconds",
-    "publisher": "NischalDahalMilliseconds",
-    "icon": "./images/logo.png",
-    "author": {
-        "name": "Nischal Dahal",
-        "email": "neeswebservice@gmail.com",
-        "url": "https://github.com/neeswebservices/use-milisecond"
+  "name": "milliseconds",
+  "displayName": "Milliseconds",
+  "publisher": "NischalDahalMilliseconds",
+  "icon": "./images/logo.png",
+  "author": {
+    "name": "Nischal Dahal",
+    "email": "neeswebservice@gmail.com",
+    "url": "https://github.com/neeswebservices/use-milisecond"
+  },
+  "description": "No more search to millisecond, Instant conversion to MS.",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "Milliseconds",
+      "properties": {
+        "milliseconds.useCommentOnOutput": {
+          "type": "boolean",
+          "default": true,
+          "description": "Adds comment of time in the text editor."
+        }
+      }
     },
-    "description": "No more search to millisecond, Instant conversion to MS.",
-    "version": "1.0.0",
-    "engines": {
-        "vscode": "^1.75.0"
-    },
-    "categories": [
-        "Other"
+    "commands": [
+      {
+        "command": "millisecond.useMilliseconds",
+        "title": "Use Milliseconds"
+      }
     ],
-    "activationEvents": [],
-    "main": "./out/extension.js",
-    "contributes": {
-        "configuration": {
-            "title": "Milliseconds",
-            "properties": {
-                "milliseconds.useCommentOnOutput": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Adds comment of time in the text editor."
-                }
-            }
-        },
-        "commands": [
-            {
-                "command": "millisecond.useMilliseconds",
-                "title": "Use Milliseconds"
-            }
-        ],
-        "keybindings": [
-            {
-                "command": "millisecond.useMilliseconds",
-                "key": "shift+alt+n",
-                "when": "editorTextFocus"
-            }
-        ]
-    },
-    "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
-        "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
-        "esbuild": "npm run esbuild-base -- --sourcemap",
-        "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
-        "pretest": "npm run compile && npm run lint",
-        "lint": "eslint src --ext ts",
-        "test": "node ./out/test/runTest.js"
-    },
-    "devDependencies": {
-        "@types/glob": "^8.1.0",
-        "@types/mocha": "^10.0.1",
-        "@types/node": "16.x",
-        "@types/vscode": "^1.75.0",
-        "@typescript-eslint/eslint-plugin": "^5.53.0",
-        "@typescript-eslint/parser": "^5.53.0",
-        "@vscode/test-electron": "^2.2.3",
-        "esbuild": "^0.17.10",
-        "eslint": "^8.34.0",
-        "glob": "^8.1.0",
-        "mocha": "^10.2.0",
-        "typescript": "^4.9.5"
-    },
-    "repository": {
-        "url": "https://github.com/neeswebservices/use-milisecond"
-    },
-    "release": {
-        "repositoryUrl": "https://github.com/neeswebservices/use-milisecond"
-    },
-    "dependencies": {
-        "moment": "^2.29.4"
-    }
+    "keybindings": [
+      {
+        "command": "millisecond.useMilliseconds",
+        "key": "shift+alt+n",
+        "when": "editorTextFocus"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
+    "esbuild": "npm run esbuild-base -- --sourcemap",
+    "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.75.0",
+    "@typescript-eslint/eslint-plugin": "^5.53.0",
+    "@typescript-eslint/parser": "^5.53.0",
+    "@vscode/test-electron": "^2.2.3",
+    "esbuild": "^0.17.10",
+    "eslint": "^8.34.0",
+    "glob": "^8.1.0",
+    "mocha": "^10.2.0",
+    "typescript": "^4.9.5"
+  },
+  "repository": {
+    "url": "https://github.com/neeswebservices/use-milisecond"
+  },
+  "release": {
+    "repositoryUrl": "https://github.com/neeswebservices/use-milisecond"
+  },
+  "dependencies": {
+    "moment": "^2.29.4"
+  }
 }
